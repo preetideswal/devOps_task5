@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: prometheus-deploy
+    labels:
+      app: peometheus 
+spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: peometheus
+    template:
+      metadata:
+        name: my-prom
+        labels: 
+          app: peometheus
+      spec: 
+        volumes: 
+          - name: prom-data
+            persistentVolumeClaim: 
+              claimName: prometheus-pvc
+        containers: 
+          - name: prometheus-con
+            image: vimal13/prometheus
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9090
+                name: "prom-server" 
+            volumeMounts:
+              - mountPath: "/data"
+                name: prom-data
+        restartPolicy: Always
+    

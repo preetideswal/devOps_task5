@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: grafana-deploy
+    labels:
+      app: grafana 
+spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: grafana
+    template:
+      metadata:
+        name: my-grafana
+        labels: 
+          app: grafana
+      spec: 
+        volumes: 
+          - name: grafana-data
+            persistentVolumeClaim: 
+              claimName: grafana-pvc
+        containers: 
+          - name: grafana-con
+            image: vimal13/grafana
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 3000
+                name: "grafana-server" 
+            volumeMounts:
+              - mountPath: "/data"
+                name: grafana-data
+        restartPolicy: Always
+    
